@@ -7,11 +7,10 @@ canvas.height = document.documentElement.clientHeight;
 
 let player = new Player(canvas.width / 2, canvas.height / 2, context);
 
+animate();
 
 function animate() {
 	requestAnimationFrame(animate);
-	player.drawImg();
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	player.draw();
 }
-
-
-animate();
