@@ -1,7 +1,13 @@
+const MOVE_UP_KEY_CODES = ["ArrowUp", "KeyW"];
+const MOVE_DOWN_KEY_CODES = ["ArrowDown", "KeyS"];
+const MOVE_LEFT_KEY_CODES = ["ArrowLeft", "KeyA"];
+const MOVE_RIGHT_KEY_CODES = ["ArrowRight", "KeyD"];
+
 export class Player {
 	constructor(x, y, context) {
 		this.x = x;
-		this.y = y;
+        this.y = y;
+        this.velocity = 3;
 		this.context = context;
 		this.cursorPosition = {
 			x: 0,
@@ -12,6 +18,14 @@ export class Player {
 			this.cursorPosition.x = event.clientX;
 			this.cursorPosition.y = event.clientY;
 		});
+
+		this.keyMap = new Map();
+		document.addEventListener("keydown", (event) =>
+			this.keyMap.set(event.code, true)
+		);
+		document.addEventListener("keyup", (event) =>
+			this.keyMap.delete(event.code)
+		);
 
 		this.image = new Image();
 		this.image.src = "./img/player.png";
@@ -41,8 +55,24 @@ export class Player {
 		);
 		this.context.translate(this.x, this.y);
 		this.context.rotate(angle + Math.PI / 2);
-        this.context.translate(-this.x, -this.y);
-        this.drawImg();
-        this.context.restore();
+		this.context.translate(-this.x, -this.y);
+		this.drawImg();
+		this.context.restore();
+	}
+
+	update() {
+		this.draw();
+		this.updatePosition();
+	}
+
+	updatePosition() {
+		if (this.shouldMove(MOVE_UP_KEY_CODES)) this.y -= this.velocity;
+		if (this.shouldMove(MOVE_DOWN_KEY_CODES)) this.y += this.velocity;
+		if (this.shouldMove(MOVE_LEFT_KEY_CODES)) this.x -= this.velocity;
+		if (this.shouldMove(MOVE_RIGHT_KEY_CODES)) this.x += this.velocity;
+	}
+
+	shouldMove(keys) {
+		return keys.some((key) => this.keyMap.get(key));
 	}
 }
