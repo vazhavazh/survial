@@ -5,8 +5,8 @@ export class Projectile {
 		this.x = x;
 		this.y = y;
 		this.context = context;
-		this.radius = 5;
-		this.color = "#ff0000";
+		this.radius = 3.5;
+		this.color = "yellow";
 		this.velocity = {
 			x: cosBetweenTwoPoints(targetX, targetY, x, y) * 12,
 			y: sinBetweenTwoPoints(targetX, targetY, x, y) * 12,

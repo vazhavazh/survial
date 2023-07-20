@@ -1,11 +1,14 @@
+import { Particle } from "./particle.js";
 import { cosBetweenTwoPoints, sinBetweenTwoPoints } from "./utils.js";
 
 export class Enemy {
 	constructor(canvasWidth, canvasHeight, context, player) {
 		this.context = context;
 		this.player = player;
-
 		this.radius = 15;
+
+		const enemyType = Math.random() > 0.8 ? 2 : 1;
+		this.health = enemyType;
 
 		if (Math.random() < 0.5) {
 			this.x =
@@ -18,7 +21,7 @@ export class Enemy {
 		}
 
 		this.image = new Image();
-		this.image.src = "./img/enemy_1.png";
+		this.image.src = `./img/enemy_${enemyType}.png`;
 		this.imageWidth = 50;
 		this.imageHeight = 60;
 		this.imageTick = 0;
@@ -56,10 +59,16 @@ export class Enemy {
 	update() {
 		this.draw();
 		this.velocity = {
-			x: cosBetweenTwoPoints(this.player.x, this.player.y, this.x, this.y) * 2,
-			y: sinBetweenTwoPoints(this.player.x, this.player.y, this.x, this.y) * 2,
+			x: cosBetweenTwoPoints(this.player.x, this.player.y, this.x, this.y),
+			y: sinBetweenTwoPoints(this.player.x, this.player.y, this.x, this.y),
 		};
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
+	}
+
+	createExplosion(particles) {
+		for (let i = 0; i < 50; i++) {
+			particles.push(new Particle(this.x, this.y, this.context));
+		}
 	}
 }
