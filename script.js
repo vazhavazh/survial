@@ -1,3 +1,4 @@
+import { Enemy } from "./enemy.js";
 import { Player } from "./player.js";
 import { Projectile } from "./projectile.js";
 
@@ -8,12 +9,14 @@ canvas.height = document.documentElement.clientHeight;
 
 let player;
 let projectiles = [];
+let enemies = [];
 
 startGame();
 
 function startGame() {
 	init();
 	animate();
+	spawnEnemies();
 }
 
 function init() {
@@ -27,8 +30,7 @@ function init() {
 		canvas.width / 2,
 		canvas.height / 2,
 		context,
-        movementsLimit
-        
+		movementsLimit
 	);
 	addEventListener("click", createProjectile);
 }
@@ -39,18 +41,24 @@ function createProjectile(event) {
 	);
 }
 
+function spawnEnemies() {
+	enemies.push(new Enemy(canvas.width, canvas.height, context, player));
+}
+
 function animate() {
 	requestAnimationFrame(animate);
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	projectiles = projectiles.filter(projectileInsideWindow);
-
 	projectiles.forEach((projectile) => projectile.update());
 	player.update();
+	enemies.forEach((enemy) => enemy.update());
 }
 
 function projectileInsideWindow(projectile) {
-	return projectile.x + projectile.radius > 0 &&
+	return (
+		projectile.x + projectile.radius > 0 &&
 		projectile.x - projectile.radius < canvas.width &&
 		projectile.y + projectile.radius > 0 &&
-		projectile.y - projectile.radius < canvas.height;
+		projectile.y - projectile.radius < canvas.height
+	);
 }
