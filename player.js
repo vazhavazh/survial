@@ -10,14 +10,23 @@ const ALL_MOVE_KEY_CODES = [
 ];
 
 export class Player {
-	constructor(x, y, context) {
+	constructor(x, y, context, movementsLimit) {
 		this.x = x;
 		this.y = y;
 		this.velocity = 3;
+		this.radius = 15;
+
 		this.context = context;
+
 		this.cursorPosition = {
 			x: 0,
 			y: 0,
+		};
+		this.movementsLimit = {
+			minX: movementsLimit.minX + this.radius,
+			maxX: movementsLimit.maxX - this.radius,
+			minY: movementsLimit.minY + this.radius,
+			maxY: movementsLimit.maxY - this.radius,
 		};
 
 		document.addEventListener("mousemove", (event) => {
@@ -58,8 +67,8 @@ export class Player {
 		}
 
 		this.context.drawImage(
-            this.image,
-            subX,
+			this.image,
+			subX,
 			0,
 			this.imageWidth,
 			this.imageHeight,
@@ -87,6 +96,7 @@ export class Player {
 		this.draw();
 		this.isMoving = this.shouldMove(ALL_MOVE_KEY_CODES);
 		this.updatePosition();
+		this.checkPositionLimitAndUpdate();
 	}
 
 	updatePosition() {
@@ -94,6 +104,13 @@ export class Player {
 		if (this.shouldMove(MOVE_DOWN_KEY_CODES)) this.y += this.velocity;
 		if (this.shouldMove(MOVE_LEFT_KEY_CODES)) this.x -= this.velocity;
 		if (this.shouldMove(MOVE_RIGHT_KEY_CODES)) this.x += this.velocity;
+	}
+
+	checkPositionLimitAndUpdate() {
+		if (this.y < this.movementsLimit.minY) this.y = this.movementsLimit.minY;
+		if (this.y > this.movementsLimit.maxY) this.y = this.movementsLimit.maxY;
+		if (this.x < this.movementsLimit.minX) this.x = this.movementsLimit.minX;
+		if (this.x > this.movementsLimit.maxX) this.x = this.movementsLimit.maxX;
 	}
 
 	shouldMove(keys) {
